@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ContaService {
 
+    private static final String NO_FOUND = "Conta not found";
+    public static final String FAILED_TO_PARSE_CSV_FILE = "Failed to parse CSV file: ";
+
     private final ContaRepository contaRepository;
 
     public Conta createConta(Conta conta) {
@@ -31,7 +34,7 @@ public class ContaService {
     }
 
     public Conta updateConta(Long id, Conta conta) {
-        Conta existingConta = contaRepository.findById(id).orElseThrow(() -> new RuntimeException("Conta not found"));
+        Conta existingConta = contaRepository.findById(id).orElseThrow(() -> new RuntimeException(NO_FOUND));
         existingConta.setDataVencimento(conta.getDataVencimento());
         existingConta.setDataPagamento(conta.getDataPagamento());
         existingConta.setValor(conta.getValor());
@@ -41,7 +44,7 @@ public class ContaService {
     }
 
     public void alterarSituacao(Long id, String situacao) {
-        Conta conta = contaRepository.findById(id).orElseThrow(() -> new RuntimeException("Conta not found"));
+        Conta conta = contaRepository.findById(id).orElseThrow(() -> new RuntimeException(NO_FOUND));
         conta.setSituacao(situacao);
         contaRepository.save(conta);
     }
@@ -51,7 +54,7 @@ public class ContaService {
     }
 
     public Conta getContaById(Long id) {
-        return contaRepository.findById(id).orElseThrow(() -> new RuntimeException("Conta not found"));
+        return contaRepository.findById(id).orElseThrow(() -> new RuntimeException(NO_FOUND));
     }
 
     public BigDecimal getTotalValorPago(LocalDate startDate, LocalDate endDate) {
@@ -66,7 +69,7 @@ public class ContaService {
             contaRepository.saveAll(contas);
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to parse CSV file: " + e.getMessage());
+            throw new RuntimeException(FAILED_TO_PARSE_CSV_FILE + e.getMessage());
         }
     }
 
