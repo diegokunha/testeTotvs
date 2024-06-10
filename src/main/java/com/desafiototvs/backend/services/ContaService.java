@@ -25,8 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ContaService {
 
-    @Autowired
-    private ContaRepository contaRepository;
+    private final ContaRepository contaRepository;
 
     public Conta createConta(Conta conta) {
         return contaRepository.save(conta);
