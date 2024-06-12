@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: sallesBR
+      POSTGRES_USER: salles
+      POSTGRES_PASSWORD: salles@2024
+    ports:
+      - "5432:5432"
+  app:
+    image: openjdk:17-jdk-slim
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    command: ["sh", "-c", "cd /app && ./mvnw spring-boot:run"]

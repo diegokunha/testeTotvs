@@ -1,9 +1,10 @@
 package com.desafiototvs.backend;
 
-import com.desafiototvs.backend.controllers.ContaController;
-import com.desafiototvs.backend.model.Conta;
-import com.desafiototvs.backend.repositories.ContaRepository;
-import com.desafiototvs.backend.services.ContaService;
+import com.desafiototvs.backend.ui.controller.ContaController;
+import com.desafiototvs.backend.ui.dto.ContaRequestDTO;
+import com.desafiototvs.backend.domain.model.Conta;
+import com.desafiototvs.backend.domain.repository.ContaRepository;
+import com.desafiototvs.backend.application.service.ContaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,17 +25,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(ContaController.class)
@@ -54,14 +51,14 @@ public class ContaControllerTest {
 
     @Test
     void testCreateConta() throws Exception {
-        Conta conta = new Conta();
+        ContaRequestDTO conta = new ContaRequestDTO();
         conta.setDataVencimento(LocalDate.now());
         conta.setDataPagamento(LocalDate.now().plusDays(5));
         conta.setValor(BigDecimal.valueOf(100));
         conta.setDescricao("Test");
         conta.setSituacao("pending");
 
-        when(contaService.createConta(any(Conta.class))).thenReturn(conta);
+        when(contaService.createConta(any(ContaRequestDTO.class))).thenReturn(conta);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/contas")
                         .contentType(MediaType.APPLICATION_JSON)

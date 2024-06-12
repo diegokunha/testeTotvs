@@ -1,4 +1,4 @@
-package com.desafiototvs.backend.model;
+package com.desafiototvs.backend.domain.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

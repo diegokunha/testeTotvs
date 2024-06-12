@@ -1,7 +1,8 @@
-package com.desafiototvs.backend.controllers;
+package com.desafiototvs.backend.ui.controller;
 
-import com.desafiototvs.backend.model.Conta;
-import com.desafiototvs.backend.services.ContaService;
+import com.desafiototvs.backend.ui.dto.ContaRequestDTO;
+import com.desafiototvs.backend.ui.dto.ContaResponseDTO;
+import com.desafiototvs.backend.application.service.ContaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,14 +22,14 @@ public class ContaController {
     private final ContaService contaService;
 
     @PostMapping
-    public ResponseEntity<Conta> createConta(@RequestBody Conta conta) {
-        Conta createdConta = contaService.createConta(conta);
+    public ResponseEntity<ContaResponseDTO> createConta(@RequestBody ContaRequestDTO contaRequestDTO) {
+        ContaResponseDTO createdConta = contaService.createConta(contaRequestDTO);
         return new ResponseEntity<>(createdConta, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Conta> updateConta(@PathVariable Long id, @RequestBody Conta conta) {
-        Conta updatedConta = contaService.updateConta(id, conta);
+    public ResponseEntity<ContaResponseDTO> updateConta(@PathVariable Long id, @RequestBody ContaRequestDTO contaRequestDTO) {
+        ContaResponseDTO updatedConta = contaService.updateConta(id, contaRequestDTO);
         return new ResponseEntity<>(updatedConta, HttpStatus.OK);
     }
 
@@ -39,15 +40,13 @@ public class ContaController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Conta>> getContas(Pageable pageable) {
-        Page<Conta> contas = contaService.getContas(pageable);
-        return new ResponseEntity<>(contas, HttpStatus.OK);
+    public ResponseEntity<Page<ContaResponseDTO>> getContas(Pageable pageable) {
+        return new ResponseEntity<>(contaService.getContas(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Conta> getContaById(@PathVariable Long id) {
-        Conta conta = contaService.getContaById(id);
-        return new ResponseEntity<>(conta, HttpStatus.OK);
+    public ResponseEntity<ContaResponseDTO> getContaById(@PathVariable Long id) {
+        return new ResponseEntity<>(contaService.getContaById(id), HttpStatus.OK);
     }
 
     @GetMapping("/total-pago")

@@ -1,7 +1,7 @@
-package com.desafiototvs.backend.repositories;
+package com.desafiototvs.backend.domain.repository;
 
 
-import com.desafiototvs.backend.model.Conta;
+import com.desafiototvs.backend.domain.model.Conta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

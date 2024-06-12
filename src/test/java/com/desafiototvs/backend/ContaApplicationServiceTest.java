@@ -1,8 +1,8 @@
 package com.desafiototvs.backend;
 
-import com.desafiototvs.backend.model.Conta;
-import com.desafiototvs.backend.repositories.ContaRepository;
-import com.desafiototvs.backend.services.ContaService;
+import com.desafiototvs.backend.domain.model.Conta;
+import com.desafiototvs.backend.domain.repository.ContaRepository;
+import com.desafiototvs.backend.application.service.ContaService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,8 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ContaServiceTest {
+public class ContaApplicationServiceTest {
 
     @Mock
     private ContaRepository contaRepository;
