@@ -3,6 +3,8 @@ package com.desafiototvs.backend;
 import com.desafiototvs.backend.domain.model.Conta;
 import com.desafiototvs.backend.domain.repository.ContaRepository;
 import com.desafiototvs.backend.application.service.ContaService;
+import com.desafiototvs.backend.ui.dto.ContaRequestDTO;
+import com.desafiototvs.backend.ui.dto.ContaResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,23 +31,22 @@ public class ContaApplicationServiceTest {
 
     @Test
     void testCreateConta() {
-        Conta conta = new Conta();
+        ContaRequestDTO conta = new ContaRequestDTO();
         conta.setDataVencimento(LocalDate.now());
         conta.setDataPagamento(LocalDate.now().plusDays(5));
         conta.setValor(BigDecimal.valueOf(100));
         conta.setDescricao("Test");
         conta.setSituacao("pending");
 
-        when(contaRepository.save(any(Conta.class))).thenReturn(conta);
+        when(contaRepository.save(any(Conta.class))).thenReturn(convertToEntity(conta));
 
-        Conta createdConta = contaService.createConta(conta);
+        ContaResponseDTO createdConta = contaService.createConta(conta);
         assertEquals(conta, createdConta);
     }
 
     @Test
     void testUpdateConta() {
         Conta conta = new Conta();
-        conta.setId(1L);
         conta.setDataVencimento(LocalDate.now());
         conta.setDataPagamento(LocalDate.now().plusDays(5));
         conta.setValor(BigDecimal.valueOf(100));
@@ -55,14 +56,13 @@ public class ContaApplicationServiceTest {
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
         when(contaRepository.save(any(Conta.class))).thenReturn(conta);
 
-        Conta updatedConta = contaService.updateConta(1L, conta);
+        ContaResponseDTO updatedConta = contaService.updateConta(1L, convertToRequest(conta));
         assertEquals(conta, updatedConta);
     }
 
     @Test
     void testUpdateConta_NotFound() {
-        Conta conta = new Conta();
-        conta.setId(1L);
+        ContaRequestDTO conta = new ContaRequestDTO();
 
         when(contaRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -89,7 +89,7 @@ public class ContaApplicationServiceTest {
 
         when(contaRepository.findById(1L)).thenReturn(Optional.of(conta));
 
-        Conta foundConta = contaService.getContaById(1L);
+        ContaResponseDTO foundConta = contaService.getContaById(1L);
         assertEquals(conta, foundConta);
     }
 
@@ -98,5 +98,25 @@ public class ContaApplicationServiceTest {
         when(contaRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> contaService.getContaById(1L));
+    }
+
+    private Conta convertToEntity(ContaRequestDTO contaRequestDTO) {
+        Conta conta = new Conta();
+        conta.setDataVencimento(contaRequestDTO.getDataVencimento());
+        conta.setDataPagamento(contaRequestDTO.getDataPagamento());
+        conta.setValor(contaRequestDTO.getValor());
+        conta.setDescricao(contaRequestDTO.getDescricao());
+        conta.setSituacao(contaRequestDTO.getSituacao());
+        return conta;
+    }
+
+    private ContaRequestDTO convertToRequest(Conta conta) {
+        ContaRequestDTO contaRequestDTO = new ContaRequestDTO();
+        contaRequestDTO.setDataVencimento(conta.getDataVencimento());
+        contaRequestDTO.setDataPagamento(conta.getDataPagamento());
+        contaRequestDTO.setValor(conta.getValor());
+        contaRequestDTO.setDescricao(conta.getDescricao());
+        contaRequestDTO.setSituacao(conta.getSituacao());
+        return contaRequestDTO;
     }
 }

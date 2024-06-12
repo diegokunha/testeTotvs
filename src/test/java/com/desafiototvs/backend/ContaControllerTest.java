@@ -5,6 +5,7 @@ import com.desafiototvs.backend.ui.dto.ContaRequestDTO;
 import com.desafiototvs.backend.domain.model.Conta;
 import com.desafiototvs.backend.domain.repository.ContaRepository;
 import com.desafiototvs.backend.application.service.ContaService;
+import com.desafiototvs.backend.ui.dto.ContaResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,14 +52,15 @@ public class ContaControllerTest {
 
     @Test
     void testCreateConta() throws Exception {
-        ContaRequestDTO conta = new ContaRequestDTO();
+        Conta conta = new Conta();
+        conta.setId(1L);
         conta.setDataVencimento(LocalDate.now());
         conta.setDataPagamento(LocalDate.now().plusDays(5));
         conta.setValor(BigDecimal.valueOf(100));
         conta.setDescricao("Test");
         conta.setSituacao("pending");
 
-        when(contaService.createConta(any(ContaRequestDTO.class))).thenReturn(conta);
+        when(contaService.createConta(any(ContaRequestDTO.class))).thenReturn(convertToDTO(conta));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/contas")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,7 +79,7 @@ public class ContaControllerTest {
         conta.setDescricao("Test");
         conta.setSituacao("pending");
 
-        when(contaService.updateConta(any(Long.class), any(Conta.class))).thenReturn(conta);
+        when(contaService.updateConta(any(Long.class), any(ContaRequestDTO.class))).thenReturn(convertToDTO(conta));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/contas/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -100,8 +102,8 @@ public class ContaControllerTest {
         Conta conta2 = new Conta();
         conta2.setId(2L);
 
-        List<Conta> contasList = Arrays.asList(conta1, conta2);
-        Page<Conta> contasPage = new PageImpl<>(contasList);
+        List<ContaRequestDTO> contasList = Arrays.asList(convertToRequest(conta1), convertToRequest(conta2));
+        Page<ContaResponseDTO> contasPage = new PageImpl<>(contasList);
 
         when(contaService.getContas(any(Pageable.class))).thenReturn(contasPage);
 
@@ -123,7 +125,7 @@ public class ContaControllerTest {
         Conta conta = new Conta();
         conta.setId(1L);
 
-        when(contaService.getContaById(1L)).thenReturn(conta);
+        when(contaService.getContaById(1L)).thenReturn(convertToDTO(conta));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/contas/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -181,5 +183,26 @@ public class ContaControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.multipart("/contas/import")
                         .file(file))
                 .andExpect(status().isInternalServerError());
+    }
+
+    private ContaResponseDTO convertToDTO(Conta conta) {
+        ContaResponseDTO contaResponseDTO = new ContaResponseDTO();
+        contaResponseDTO.setId(conta.getId());
+        contaResponseDTO.setDataVencimento(conta.getDataVencimento());
+        contaResponseDTO.setDataPagamento(conta.getDataPagamento());
+        contaResponseDTO.setValor(conta.getValor());
+        contaResponseDTO.setDescricao(conta.getDescricao());
+        contaResponseDTO.setSituacao(conta.getSituacao());
+        return contaResponseDTO;
+    }
+
+    private ContaRequestDTO convertToRequest(Conta conta) {
+        ContaRequestDTO contaRequestDTO = new ContaRequestDTO();
+        contaRequestDTO.setDataVencimento(conta.getDataVencimento());
+        contaRequestDTO.setDataPagamento(conta.getDataPagamento());
+        contaRequestDTO.setValor(conta.getValor());
+        contaRequestDTO.setDescricao(conta.getDescricao());
+        contaRequestDTO.setSituacao(conta.getSituacao());
+        return contaRequestDTO;
     }
 }
